@@ -7,3 +7,7 @@ repository.workspace = true
 license.workspace = true
 
 [dependencies]
+ratatui = "0.28.1"
+snafu = "0.8.5"
+wayland-backend = "0.3.7"
+wayland-client = "0.31.6"
