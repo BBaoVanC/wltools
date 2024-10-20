@@ -1,0 +1,12 @@
+[workspace]
+members = [
+    "wlt-mitm",
+]
+resolver = "2"
+
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+[workspace.package]
+authors = ["BBaoVanC <bbaovanc@bbaovanc.com>"]
+edition = "2021"
+repository = "https://github.com/BBaoVanC/wltools"
+license = "BSD-3-Clause"
