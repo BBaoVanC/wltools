@@ -33,7 +33,7 @@ fn main() -> Result<(), snafu::Whatever> {
     let upstream_conn = connect_server(&xdg_runtime_dir);
 
     // the server we are creating that is proxied to the upstream compositor; the client will connect to this server
-    let backend = server::Backend::<()>::new();
+    let backend = server::Backend::<()>::new().unwrap();
     let mut srv_sock_count = 0;
     let srv_sock = loop {
         let path: PathBuf = [&xdg_runtime_dir, &OsString::from(format!("wlt-mitm-{}", srv_sock_count))].iter().collect();
