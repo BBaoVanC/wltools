@@ -1,11 +1,14 @@
-use std::{env, os::unix::net::{UnixListener, UnixStream}, path::{Path, PathBuf}};
-use std::ffi::{OsString, OsStr};
-use std::thread;
-use std::sync::Arc;
+use std::{
+    env,
+    ffi::{OsStr, OsString},
+    os::unix::net::{UnixListener, UnixStream},
+    path::{Path, PathBuf},
+    sync::Arc,
+    thread,
+};
 
 use snafu::prelude::*;
-use wayland_backend::rs::client;
-use wayland_backend::rs::server;
+use wayland_backend::rs::{client, server};
 
 #[derive(Debug)]
 struct UnixSocketServer {
@@ -32,25 +35,36 @@ fn main() -> Result<(), snafu::Whatever> {
     // connection to the Wayland compositor we are running beneath and proxying
     let upstream_conn = connect_server(&xdg_runtime_dir);
 
-    // the server we are creating that is proxied to the upstream compositor; the client will connect to this server
+    // the server we are creating that is proxied to the upstream compositor; the
+    // client will connect to this server
     let backend = server::Backend::<()>::new().unwrap();
     let mut srv_sock_count = 0;
     let srv_sock = loop {
-        let path: PathBuf = [&xdg_runtime_dir, &OsString::from(format!("wlt-mitm-{}", srv_sock_count))].iter().collect();
+        let path: PathBuf = [
+            &xdg_runtime_dir,
+            &OsString::from(format!("wlt-mitm-{}", srv_sock_count)),
+        ]
+        .iter()
+        .collect();
         dbg!(&path);
-        match UnixSocketServer::new(path.clone()) { 
+        match UnixSocketServer::new(path.clone()) {
             Ok(sock) => break Some(sock),
             Err(e) => {
                 if srv_sock_count > 9 {
                     eprintln!("exhausted all attempts to create a socket");
                     break None;
                 }
-                eprintln!("error creating {}: {:?}. Will try again with different path.", path.display(), e);
+                eprintln!(
+                    "error creating {}: {:?}. Will try again with different path.",
+                    path.display(),
+                    e
+                );
                 srv_sock_count += 1;
                 continue;
             }
         }
-    }.whatever_context("error creating socket to listen on as a Wayland server")?;
+    }
+    .whatever_context("error creating socket to listen on as a Wayland server")?;
 
     let unix_listener_thread_handle = backend.handle();
     thread::spawn(move || {
