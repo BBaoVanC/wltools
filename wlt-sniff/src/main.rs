@@ -42,7 +42,7 @@ fn main() -> Result<(), snafu::Whatever> {
     let srv_sock = loop {
         let path: PathBuf = [
             &xdg_runtime_dir,
-            &OsString::from(format!("wlt-mitm-{}", srv_sock_count)),
+            &OsString::from(format!("wlt-sniff-{}", srv_sock_count)),
         ]
         .iter()
         .collect();
