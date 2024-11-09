@@ -1,6 +1,6 @@
 [workspace]
 members = [
-    "wlt-sniff",
+    "wlsniff",
 ]
 resolver = "2"
 
